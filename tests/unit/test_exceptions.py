@@ -1,7 +1,7 @@
 import pytest
 
 from src.teamwork.client import Teamwork
-from src.teamwork.exceptions import CredentialsError, CREDENTIALS_MESSAGE
+from src.teamwork.exceptions import CREDENTIALS_MESSAGE, CredentialsError
 
 
 def test_credential_raises():
