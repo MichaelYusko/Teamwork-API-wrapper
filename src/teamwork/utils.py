@@ -7,5 +7,5 @@ def make_url(team: str, action: str) -> str:
     :param action: An Teamwork action
     :return: An url based on url and action
     """
-    url = f'https://{team}.teamwork.com/{action}'
+    url = f'https://{team}.teamwork.com/{action}.json'
     return url
