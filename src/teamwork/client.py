@@ -47,6 +47,6 @@ class Auth(BaseTeamwork):  # pylint: disable=too-few-public-methods
 
 class Teamwork(BaseTeamwork):  # pylint: disable=too-few-public-methods
     """Main class"""
-    def __init__(self, username=None, password=None, team=None):  # pylint: disable=useless-super-delegation
+    def __init__(self, username=None, password=None, team=None):
         super().__init__(username, password, team)
         self.auth = Auth(username, password, team)
