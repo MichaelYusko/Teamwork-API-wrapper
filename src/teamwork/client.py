@@ -4,7 +4,7 @@ from requests import Session
 
 from .constants import BASE_URL
 from .exceptions import CredentialsError  # pylint: disable=import-error
-from .utils import make_url
+from .utils import make_error, make_url
 
 
 class BaseTeamwork:  # pylint: disable=too-few-public-methods
@@ -29,7 +29,11 @@ class BaseTeamwork:  # pylint: disable=too-few-public-methods
         :param kwargs: Another keys
         :return: An dictionary object
         """
-        return self.session.get(url, **kwargs).json()
+        response = self.session.get(url, **kwargs)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return response.status_code
 
 
 class Auth(BaseTeamwork):  # pylint: disable=too-few-public-methods
@@ -45,6 +49,20 @@ class Auth(BaseTeamwork):  # pylint: disable=too-few-public-methods
         """
         return self._get(BASE_URL)
 
+    @property
+    def admin_account(self):
+        """
+        :return: An dictionary with Administrator information
+                 If an user doesn't have permission
+                 Just return the dictionary with error and code.
+        """
+        url = make_url('account')
+        response = self._get(url)
+
+        if response == 401:
+            response = make_error('User must be an Administrator', 401)
+        return response
+
 
 class Activity(BaseTeamwork):
     def __init__(self, username, password, team):
@@ -58,7 +76,7 @@ class Activity(BaseTeamwork):
         :param only_stared: Return stared projects
         :return: an array with objects
         """
-        url = make_url(self.team, self._action)
+        url = make_url(self._action, self.team)
         params = {'maxItems': max_items, 'onlyStarred': only_stared}
 
         response = self._get(url, params=params)
