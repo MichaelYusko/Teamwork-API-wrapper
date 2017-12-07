@@ -1,5 +1,5 @@
-component_depth: 1
 exclude:
- - src/teamwork/client.py
+- /src/teamwork/client.py
+component_depth: 1
 languages:
 - python
