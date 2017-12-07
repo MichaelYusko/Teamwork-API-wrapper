@@ -16,7 +16,7 @@ class BaseTeamwork:  # pylint: disable=too-few-public-methods
         self._credentials = (username, password)
         self.session = Session()
         self._auth()
-        self.team = team
+        self._team = team
 
     def _auth(self):
         """Auth via Basic authentication"""
@@ -64,6 +64,21 @@ class Auth(BaseTeamwork):  # pylint: disable=too-few-public-methods
         return response
 
 
+class Project(BaseTeamwork):
+    """Project stuff"""
+    def __init__(self, username, password, team):
+        super().__init__(username, password, team)
+
+    _action = 'projects'
+
+    def all(self):
+        """
+        :return: Retrieves all accessible projects. Default returns your active projects.
+        """
+        url = make_url(self._action, self._team)
+        return self._get(url)
+
+
 class Activity(BaseTeamwork):
     def __init__(self, username, password, team):
         super().__init__(username, password, team)
@@ -76,7 +91,7 @@ class Activity(BaseTeamwork):
         :param only_stared: Return stared projects
         :return: an array with objects
         """
-        url = make_url(self._action, self.team)
+        url = make_url(self._action, self._team)
         params = {'maxItems': max_items, 'onlyStarred': only_stared}
 
         response = self._get(url, params=params)
@@ -90,3 +105,4 @@ class Teamwork(BaseTeamwork):  # pylint: disable=too-few-public-methods
         super().__init__(username, password, team)
         self.auth = Auth(username, password, team)
         self.activity = Activity(username, password, team)
+        self.projects = Project(username, password, team)
