@@ -98,6 +98,22 @@ class Activity(BaseTeamwork):
         all_projects = response['activity']
         return all_projects
 
+    # Noticed, that if an user doesn't have
+    # Admin permissions
+    # the Teamwork API returned the 401 code
+    # It's weird.
+    def by_id(self, project_id: str):
+        """
+        :param project_id: An project id
+        :return: Error dict, or an dict with information
+        """
+        build_url = f'projects/{project_id}/{self._action}'
+        url = make_url(build_url)
+        response = self._get(url)
+        if response == 401:
+            return make_error(error='Unauthorized', code=401)
+        return response
+
 
 class Teamwork(BaseTeamwork):  # pylint: disable=too-few-public-methods
     """Main class"""
